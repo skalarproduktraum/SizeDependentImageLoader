@@ -8,7 +8,7 @@
         background-color: #333333;
         background-image: url(cms_1024.jpg);
         background-position: bottom right;
-        background-repeat: repeat-y;
+        background-repeat: no-repeat;
       }
 
   </style>
@@ -31,8 +31,10 @@
   <script type="text/javascript">
       $("body").SizeDependentImageLoader({
               'imageName' : 'cms',
-              'maximalVerticalSizes' : [720, 1024, 1400, 1920],
-              'imageBaseURL' : './'
+              'imageVerticalSizes' : [472, 671, 917, 1258],
+              'maximumHorizontalSizes' : [720, 1024, 1400, 1920],
+              'imageBaseURL' : './',
+              'backgroundPosition' : 'center'
               });
   </script>
 </body>
