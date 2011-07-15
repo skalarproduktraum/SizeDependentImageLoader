@@ -1,0 +1,40 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>jquery.SizeDependentImageLoader: Background Image example</title>
+  <style type="text/css">
+
+      body {
+        background-color: #333333;
+        background-image: url(cms_1024.jpg);
+        background-position: bottom right;
+        background-repeat: repeat-y;
+      }
+
+  </style>
+</head>
+
+<body>
+  <div id="container">
+    <header>
+
+    </header>
+    <div id="main" role="main">
+
+    </div>
+    <footer>
+
+    </footer>
+  </div>
+  <script src='../lib/jquery.js'></script>
+  <script src="../src/jquery.SizeDependentImageLoader.js"></script>
+  <script type="text/javascript">
+      $("body").SizeDependentImageLoader({
+              'imageName' : 'cms',
+              'maximalVerticalSizes' : [720, 1024, 1400, 1920],
+              'imageBaseURL' : './'
+              });
+  </script>
+</body>
+</html>
+
