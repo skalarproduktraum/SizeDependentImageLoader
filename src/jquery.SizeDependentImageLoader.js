@@ -12,7 +12,15 @@
                 windowSizeUpdated(element, this.options);
             }
 
-            $(window).bind('resize.SizeDependentImageLoader', {elem: element, options: this.options},
+            $(window).resize(function() {
+                if(this.resizeTO) clearTimeout(this.resizeTO);
+                this.resizeTO = setTimeout(function() {
+                    $(this).trigger('resizeEnd');
+                }, 250);
+            });
+            
+
+            $(window).bind('resizeEnd.SizeDependentImageLoader', {elem: element, options: this.options},
                 function(event) { windowSizeUpdated(event.data.elem, event.data.options); }
             );
 
@@ -63,12 +71,12 @@ function windowSizeUpdated(element, options) {
             windowHeight = $(window).height();
 
             var i = 0;
+            var j = 0;
             var found = false;
 
             for(i = 0; i < sizes.length; i++) {
                // we have found an image exceeding the viewport width
-               if(sizes[i] >= windowWidth && sizes[i-1] <= windowWidth 
-                  || verticalSizes[i] >= windowHeight && verticalSizes[i-1] <= windowHeight) {
+               if(sizes[i] >= windowWidth && sizes[i-1] <= windowWidth) { 
                    found = true;
                    break;
                }
@@ -78,6 +86,21 @@ function windowSizeUpdated(element, options) {
             } if (!found && sizes[sizes.length-1] < windowWidth) {
                 i = sizes.length-1;
             }
+            found = false;
+            for(j = 0; j < sizes.length; j++) {
+               // we have found an image exceeding the viewport width
+               if(verticalSizes[j] >= windowHeight && verticalSizes[j-1] <= windowHeight) {
+                   found = true;
+                   break;
+               }
+            }
+            if(verticalSizes[0] >= windowHeight) {
+                j = 0;
+            } if (!found && verticalSizes[verticalSizes.length-1] < windowHeight) {
+                j = verticalSizes.length-1;
+            }
+
+            (i <= j) ? i=j : i=i;
             
             if(options.mode == "css") {
                 element.css("backgroundImage", "url(" + options.imageBaseURL + "/" + options.imageName + "_" + sizes[i] + "." + options.imageExtension + ")");
