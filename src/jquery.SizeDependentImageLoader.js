@@ -40,11 +40,18 @@ $.SizeDependentImageLoader.defaultOptions = {
             'imageBaseURL' : '',
             'imageVerticalSizes:': [768, 900, 1200],
             'maximumHorizontalSizes' : [1024, 1400, 1920],
-            'cssProperty' : 'background-image',
+            'mode': "css",
             'findImageOnInit' : true,
-            'repositionBackground': true,
-            'backgroundPosition': 'center'
+            'reposition': true,
+            'repositioningRule': positionInCenterOfWindow
 };
+
+function positionInCenterOfWindow(windowWidth, windowHeight, imageWidth, imageHeight) {
+    x = -(imageWidth - windowWidth)/2;
+    y = -(imageHeight - windowHeight)/2;
+
+    return [x, y];
+}
 
 function windowSizeUpdated(element, options) {
             // find best fitting window width
@@ -71,14 +78,21 @@ function windowSizeUpdated(element, options) {
             } if (!found && sizes[sizes.length-1] < windowWidth) {
                 i = sizes.length-1;
             }
+            
+            if(options.mode == "css") {
+                element.css("backgroundImage", "url(" + options.imageBaseURL + "/" + options.imageName + "_" + sizes[i] + "." + options.imageExtension + ")");
+                if(options.reposition) {
+                    position = options.repositioningRule(windowWidth, windowHeight, sizes[i], verticalSizes[i]);
+                    element.css("background-position", position[0] + "px " + position[1] + "px");
+                }
+            } 
+            
+            if(options.mode == "html") {
+                element.attr("src", options.imageBaseURL + "/" + options.imageName + "_" + sizes[i] + "." + options.imageExtension);
 
-            element.css(options.cssProperty, "url(" + options.imageBaseURL + "/" + options.imageName + "_" + sizes[i] + "." + options.imageExtension + ")");
-
-            if(options.repositionBackground) {
-                if(options.backgroundPosition == "center") {
-                    position_x = -Math.abs(sizes[i] - windowWidth)/2;
-                    position_y = -Math.abs(verticalSizes[i] - windowHeight)/2;
-                    element.css("background-position", position_x + "px " + position_y + "px"); 
+                if(options.reposition) {
+                    position = options.repositioningRule(windowWidth, windowHeight, sizes[i], verticalSizes[i]);
+                    element.css("margin", position[0] + "px " + position[1] + "px"); 
                 }
             }
 };
