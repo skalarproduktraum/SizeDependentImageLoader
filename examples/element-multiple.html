@@ -1,0 +1,83 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>jquery.SizeDependentImageLoader: Multiple Image example, in element</title>
+  <style type="text/css">
+
+      body {
+        background-color: #333333;
+        width: 100%;
+        height: 100%;
+    }
+
+      #wrapper {
+          display: inline;
+        position: absolute;
+        width: 500%;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+      }
+
+      .element {
+        float: left;
+        background-color: grey;
+        background-repeat: no-repeat;
+        height: 100%;
+        width: 20%;
+      }
+
+  </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <span id="one" class="element">&nbsp;</span>
+        <span id="two" class="element">&nbsp;</span>
+        <span id="three" class="element">&nbsp;</span>
+        <span id="four" class="element">&nbsp;</span>
+        <span id="five" class="element">&nbsp;</span>
+    </div>
+    <script src='../lib/jquery.js'></script>
+    <script src="../src/jquery.SizeDependentImageLoader.js"></script>
+    <script type="text/javascript">
+        $("#one").SizeDependentImageLoader({
+              'imageName' : 'cms',
+              'imageVerticalSizes' : [472, 671, 917, 1258],
+              'maximumHorizontalSizes' : [720, 1024, 1400, 1920],
+              'imageBaseURL' : './',
+              'mode': 'css'
+              });
+        $("#two").SizeDependentImageLoader({
+              'imageName' : 'fermilab',
+              'imageVerticalSizes' : [469, 667, 912, 1251],
+              'maximumHorizontalSizes' : [720, 1024, 1400, 1920],
+              'imageBaseURL' : './',
+              'mode': 'css'
+              });
+        $("#three").SizeDependentImageLoader({
+              'imageName' : 'sts104',
+              'imageVerticalSizes' : [479, 681, 931, 1277],
+              'maximumHorizontalSizes' : [720, 1024, 1400, 1920],
+              'imageBaseURL' : './',
+              'mode': 'css'
+              });
+        $("#four").SizeDependentImageLoader({
+              'imageName' : 'fermilab',
+              'imageVerticalSizes' : [469, 667, 912, 1251],
+              'maximumHorizontalSizes' : [720, 1024, 1400, 1920],
+              'imageBaseURL' : './',
+              'mode': 'css'
+              });
+        $("#five").SizeDependentImageLoader({
+              'imageName' : 'cms',
+              'imageVerticalSizes' : [472, 671, 917, 1258],
+              'maximumHorizontalSizes' : [720, 1024, 1400, 1920],
+              'imageBaseURL' : './',
+              'mode': 'css'
+              });
+    </script>
+</body>
+</html>
+
