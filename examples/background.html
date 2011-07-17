@@ -11,20 +11,17 @@
         background-repeat: no-repeat;
       }
 
+      #img.background-image {
+          width: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+      }
+
   </style>
 </head>
 
 <body>
-  <div id="container">
-    <header>
-
-    </header>
-    <div id="main" role="main">
-
-    </div>
-    <footer>
-
-    </footer>
   </div>
   <script src='../lib/jquery.js'></script>
   <script src="../src/jquery.SizeDependentImageLoader.js"></script>
@@ -34,7 +31,7 @@
               'imageVerticalSizes' : [472, 671, 917, 1258],
               'maximumHorizontalSizes' : [720, 1024, 1400, 1920],
               'imageBaseURL' : './',
-              'backgroundPosition' : 'center'
+              'mode': 'css'
               });
   </script>
 </body>

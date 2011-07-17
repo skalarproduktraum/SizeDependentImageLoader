@@ -12,7 +12,15 @@
                 windowSizeUpdated(element, this.options);
             }
 
-            $(window).bind('resize.SizeDependentImageLoader', {elem: element, options: this.options},
+            $(window).resize(function() {
+                if(this.resizeTO) clearTimeout(this.resizeTO);
+                this.resizeTO = setTimeout(function() {
+                    $(this).trigger('resizeEnd');
+                }, 250);
+            });
+            
+
+            $(window).bind('resizeEnd.SizeDependentImageLoader', {elem: element, options: this.options},
                 function(event) { windowSizeUpdated(event.data.elem, event.data.options); }
             );
 
@@ -40,11 +48,18 @@ $.SizeDependentImageLoader.defaultOptions = {
             'imageBaseURL' : '',
             'imageVerticalSizes:': [768, 900, 1200],
             'maximumHorizontalSizes' : [1024, 1400, 1920],
-            'cssProperty' : 'background-image',
+            'mode': "css",
             'findImageOnInit' : true,
-            'repositionBackground': true,
-            'backgroundPosition': 'center'
+            'reposition': true,
+            'repositioningRule': positionInCenterOfWindow
 };
+
+function positionInCenterOfWindow(windowWidth, windowHeight, imageWidth, imageHeight) {
+    x = -(imageWidth - windowWidth)/2;
+    y = -(imageHeight - windowHeight)/2;
+
+    return [x, y];
+}
 
 function windowSizeUpdated(element, options) {
             // find best fitting window width
@@ -56,12 +71,12 @@ function windowSizeUpdated(element, options) {
             windowHeight = $(window).height();
 
             var i = 0;
+            var j = 0;
             var found = false;
 
             for(i = 0; i < sizes.length; i++) {
                // we have found an image exceeding the viewport width
-               if(sizes[i] >= windowWidth && sizes[i-1] <= windowWidth 
-                  || verticalSizes[i] >= windowHeight && verticalSizes[i-1] <= windowHeight) {
+               if(sizes[i] >= windowWidth && sizes[i-1] <= windowWidth) { 
                    found = true;
                    break;
                }
@@ -71,14 +86,36 @@ function windowSizeUpdated(element, options) {
             } if (!found && sizes[sizes.length-1] < windowWidth) {
                 i = sizes.length-1;
             }
+            found = false;
+            for(j = 0; j < sizes.length; j++) {
+               // we have found an image exceeding the viewport width
+               if(verticalSizes[j] >= windowHeight && verticalSizes[j-1] <= windowHeight) {
+                   found = true;
+                   break;
+               }
+            }
+            if(verticalSizes[0] >= windowHeight) {
+                j = 0;
+            } if (!found && verticalSizes[verticalSizes.length-1] < windowHeight) {
+                j = verticalSizes.length-1;
+            }
 
-            element.css(options.cssProperty, "url(" + options.imageBaseURL + "/" + options.imageName + "_" + sizes[i] + "." + options.imageExtension + ")");
+            (i <= j) ? i=j : i=i;
+            
+            if(options.mode == "css") {
+                element.css("backgroundImage", "url(" + options.imageBaseURL + "/" + options.imageName + "_" + sizes[i] + "." + options.imageExtension + ")");
+                if(options.reposition) {
+                    position = options.repositioningRule(windowWidth, windowHeight, sizes[i], verticalSizes[i]);
+                    element.css("background-position", position[0] + "px " + position[1] + "px");
+                }
+            } 
+            
+            if(options.mode == "html") {
+                element.attr("src", options.imageBaseURL + "/" + options.imageName + "_" + sizes[i] + "." + options.imageExtension);
 
-            if(options.repositionBackground) {
-                if(options.backgroundPosition == "center") {
-                    position_x = -Math.abs(sizes[i] - windowWidth)/2;
-                    position_y = -Math.abs(verticalSizes[i] - windowHeight)/2;
-                    element.css("background-position", position_x + "px " + position_y + "px"); 
+                if(options.reposition) {
+                    position = options.repositioningRule(windowWidth, windowHeight, sizes[i], verticalSizes[i]);
+                    element.css("margin", position[0] + "px " + position[1] + "px"); 
                 }
             }
 };
